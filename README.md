@@ -31,14 +31,14 @@ Example: "She is very outspoken in meetings."
     
 ## Contributors
 
-  - **Hailey Coval** - *Backend Developer* -
-    [hailstorm24](https://github.com/hailstorm24))
-  - **Li June Choi** - *Frontend Developer* -
-    [lijune-choi1](https://github.com/lijune-choi1))
-  - **Navya Sahay** - *Backend Developer* -
-    [nsahay2004](https://github.com/nsahay2004))
-  - **Yuyuan Huang** - *Backend Developer* -
-    [yhuang2024](https://github.com/yhuang2024))
+  - **Hailey Coval** - *Backend Developer*:
+    [hailstorm24](https://github.com/hailstorm24)
+  - **Li June Choi** - *Frontend Developer*:
+    [lijune-choi1](https://github.com/lijune-choi1)
+  - **Navya Sahay** - *Backend Developer*:
+    [nsahay2004](https://github.com/nsahay2004)
+  - **Yuyuan Huang** - *Backend Developer*:
+    [yhuang2024](https://github.com/yhuang2024)
 
 ## Acknowledgments
 
