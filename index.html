@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Interface</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <div class="logo-circle"></div>
+            <div>TrackerName</div>
+        </div>
+    </nav>
+
+    <div class = "wrapper">
+        <div class="main-content">
+            <div class="input-area">
+                <div class="input-field" contenteditable="true">Type or paste (Command + V) text here or upload a document</div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="overview-section">
+                <h2>Overview</h2>
+                <div class = "result-box">
+                    <div class="count-display">10</div>
+                    <h3>Number of Adjectives to Change</h3>
+                </div>
+            </div>
+
+            <div class="overview-section">
+                <h2>Suggestions</h2>
+                <div class="suggestions-section">
+
+                    <div class="suggestion-item">
+                        <div class="suggestion-header">
+                            <div class="suggestion-dot"></div>
+                            <div>Correct your words</div>
+                        </div>
+                        <div class="word-correction">
+                            <span class="strikethrough">Masculine Word</span>
+                            <span>Corrected Word</span>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-accept">Accept</button>
+                            <button class="btn btn-dismiss">Dismiss</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+              <!-- Modal -->
+            <div class="modal-overlay">
+                <div class="modal">
+                    <button class="modal-close">×</button>
+                    <h2>Overview of Product</h2>
+                    <div class="modal-content">
+                        <div class="modal-image"></div>
+                        <h3>Explanation of said product</h3>
+                        <p>Explanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said productExplanation of said product</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <button class="help-button">?</button>
+    <script src = "script.js"></script>

@@ -1,0 +1,234 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+:root {
+    --purple-primary: #4B0082;
+    --purple-light: #F5F0FF;
+    --purple-light2: #FDF8FF;
+    --text-gray: #666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "IBM Plex Serif", serif;
+}
+nav {
+    width:100%;
+}
+body {
+    min-height: 100vh;
+}
+
+.wrapper{
+    display:flex;
+}
+.main-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.sidebar {
+    width: 400px;
+    background: white;
+    border-left: 1px solid #eee;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--purple-primary);
+    color: white;
+}
+
+.logo-circle {
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+}
+
+.input-area {
+    margin-top: 2rem;
+}
+
+.input-title {
+    color: var(--text-gray);
+    margin-bottom: 1rem;
+}
+
+.input-field {
+    width: 100%;
+    min-height: 100px;
+    padding: 1rem;
+    border-radius: 4px;
+    color: var(--text-gray);
+    font-size:16px;
+}
+
+.overview-section {
+    margin-bottom: 2rem;
+}
+
+.overview-section h2 {
+    color: var(--purple-primary);
+    background: var(--purple-light2);
+    border-bottom: 2px solid var(--purple-primary);
+    padding: 1rem;
+    font-size:18px;
+    margin-bottom: 1rem;
+}
+
+.result-box{
+    padding:1rem;
+    background: var(--purple-light2);
+    border-radius:8px;
+    margin: 0 1rem 0 1rem;
+}
+
+.result-box h3{
+    font-weight: 500;
+}
+
+
+.count-display {
+    font-size: 4rem;
+    color: var(--purple-primary);
+    margin: 1rem 0;
+}
+
+.status-text {
+    color: var(--text-gray);
+}
+
+.suggestions-section {
+    background: var(--purple-light2);
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem;
+}
+
+.suggestion-item {
+    margin: 1rem 0;
+}
+
+.suggestion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+}
+
+.suggestion-dot {
+    width: 8px;
+    height: 8px;
+    background: red;
+    border-radius: 50%;
+}
+
+.word-correction {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-accept {
+    background: var(--purple-primary);
+    color: white;
+}
+
+.btn-dismiss {
+    background: transparent;
+    color: var(--text-gray);
+}
+
+.help-button {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 40px;
+    height: 40px;
+    background: var(--purple-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+  /* Modal styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal h2 {
+    color: var(--purple-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-content {
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+.modal-image {
+    width: 100%;
+    height: 200px;
+    background: #f0f0f0;
+    margin: 1rem 0;
+}
