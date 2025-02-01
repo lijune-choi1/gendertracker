@@ -24,9 +24,11 @@ Install Torch library
 
     pip install torch
 
-End with an example of getting some data out of the system or using it
-for a little demo
+Example: "She is very outspoken in meetings."
 
+    outspoken is a gendered word.
+    Here are some synonyms you can use instead: ['candid', 'blunt', 'frank']
+    
 ## Contributors
 
   - **Hailey Coval** - *Backend Developer* -
