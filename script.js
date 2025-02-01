@@ -1,16 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Temporary Word dictionaries for checking
-    const wordChecks = {
-        flagged: {
-            'witch': 'Delete Immediately',
-            'hag': '',
-            'mankind': ''
-        },
-        suggestions: {
-            'handsome': '[insert better synonym]',
-            'womanly': '[insert better synonym]',
+    let wordChecks = {};
+
+    // Function to fetch updated wordChecks from Flask server
+    async function fetchUpdatedWordChecks() {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/update_word_checks');
+            if (response.ok) {
+                wordChecks = await response.json();
+                console.log('Updated wordChecks:', wordChecks);
+                updateContent(); // Call updateContent after fetching wordChecks
+            } else {
+                console.error('Failed to fetch updated wordChecks');
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
-    };
+    }
 
     // Get DOM elements
     const contentEditable = document.querySelector('.input-field');
@@ -131,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = contentEditable.innerHTML;
         const regexSuggested = new RegExp(`<span class="suggested-word" data-word="${word}">${word}</span>`, 'g');
         contentEditable.innerHTML = text.replace(regexSuggested, wordChecks.suggestions[word]);
-        console.log(passingReplaceWorld);
         updateContent();
     }
     
@@ -167,8 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Add input event listener
-    contentEditable.addEventListener('input', updateContent);
+    // THIS IS CURRENTLY BEING CALLED ON EDIT. NEED TO MAKE RUN BUTTON
+    contentEditable.addEventListener('input', fetchUpdatedWordChecks);
+    fetchUpdatedWordChecks();
+
 });
 
 function clearText(element) {
