@@ -122,15 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteWordFromInput(word) {
         const text = contentEditable.innerHTML;
         const regexFlagged = new RegExp(`<span class="flagged-word" data-word="${word}">${word}</span>`, 'g');
-        const regexSuggested = new RegExp(`<span class="suggested-word" data-word="${word}">${word}</span>`, 'g');
-        contentEditable.innerHTML = text.replace(regexFlagged, '').replace(regexSuggested, '');
+        contentEditable.innerHTML = text.replace(regexFlagged, '');
         updateContent();
     }
 
     //Function to switch word from input 
     function replaceWordFromInput(word) {
+        const text = contentEditable.innerHTML;
         const regexSuggested = new RegExp(`<span class="suggested-word" data-word="${word}">${word}</span>`, 'g');
-        contentEditable.innerHTML = text.replace(regexSuggested, 'hello');
+        contentEditable.innerHTML = text.replace(regexSuggested, wordChecks.suggestions[word]);
         console.log(passingReplaceWorld);
         updateContent();
     }
@@ -170,3 +170,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add input event listener
     contentEditable.addEventListener('input', updateContent);
 });
+
+function clearText(element) {
+    if (element.innerHTML === 'Type or paste (Command + V) text here or upload a document') {
+        element.innerHTML = '';
+    }
+}
+
+function restoreText(element) {
+    if (element.innerHTML === '') {
+        element.innerHTML = 'Type or paste (Command + V) text here or upload a document';
+    }
+}
