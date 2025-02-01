@@ -1,9 +1,158 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Modal functionality
+    // Temporary Word dictionaries for checking
+    const wordChecks = {
+        flagged: {
+            'witch': 'Delete Immediately',
+            'hag': '',
+            'mankind': ''
+        },
+        suggestions: {
+            'handsome': '[insert better synonym]',
+            'womanly': '[insert better synonym]',
+        }
+    };
+
+    // Get DOM elements
+    const contentEditable = document.querySelector('.input-field');
+    const flaggedSection = document.querySelector('.overview-section:nth-child(2) .edit-section');
+    const suggestionsSection = document.querySelector('.overview-section:nth-child(3) .edit-section');
+    const countDisplay = document.querySelector('.count-display');
     const helpButton = document.querySelector('.help-button');
     const modalOverlay = document.querySelector('.modal-overlay');
     const modalClose = document.querySelector('.modal-close');
 
+    // Function to highlight words and update panels
+    function updateContent() {
+        let text = contentEditable.textContent;
+        let foundFlagged = new Set();
+        let foundSuggestions = new Set();
+
+        // Check flagged words
+        Object.entries(wordChecks.flagged).forEach(([word, reason]) => {
+            const regex = new RegExp(`\\b${word}\\b`, 'gi');
+            if (regex.test(text)) {
+                foundFlagged.add({ word, reason });
+            }
+            regex.lastIndex = 0;
+            text = text.replace(regex, `<span class="flagged-word" data-word="${word}">$&</span>`);
+        });
+
+        // Check suggested improvements
+        Object.entries(wordChecks.suggestions).forEach(([word, suggestion]) => {
+            const regex = new RegExp(`\\b${word}\\b`, 'gi');
+            if (regex.test(text)) {
+                foundSuggestions.add({ word, suggestion });
+            }
+            regex.lastIndex = 0;
+            text = text.replace(regex, `<span class="suggested-word" data-word="${word}">$&</span>`);
+        });
+
+        // Update the content
+        contentEditable.innerHTML = text;
+        placeCaretAtEnd(contentEditable);
+        
+        // Update panels
+        updateFlaggedSection(foundFlagged);
+        updateSuggestionsSection(foundSuggestions);
+        
+        // Update count
+        countDisplay.textContent = foundFlagged.size + foundSuggestions.size;
+    }
+
+    // Function to update the flagged section
+    function updateFlaggedSection(foundWords) {
+        flaggedSection.innerHTML = '';
+
+        foundWords.forEach(({ word, reason }) => {
+            const flaggedItem = `
+                <div class="edit-item">
+                    <div class="edit-header">
+                        <div class="flagged-dot"></div>
+                        <div>${reason}</div>
+                    </div>
+                    <div class="word-correction">
+                        <span>${word}</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-accept" data-word="${word}" data-type="flagged">Delete</button>
+                        <button class="btn btn-dismiss" data-type="flagged">Dismiss</button>
+                    </div>
+                </div>
+            `;
+            flaggedSection.insertAdjacentHTML('beforeend', flaggedItem);
+        });
+    }
+
+    // Function to update the suggestions section
+    function updateSuggestionsSection(foundWords) {
+        suggestionsSection.innerHTML = '';
+
+        foundWords.forEach(({ word, suggestion }) => {
+            const suggestionItem = `
+                <div class="edit-item">
+                    <div class="edit-header">
+                        <div class="suggestion-dot"></div>
+                        <div>Consider revising</div>
+                    </div>
+                    <div class="word-correction">
+                        <span class="strikethrough">${word}</span>
+                        <span>${suggestion}</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-accept" data-word="${word}" data-type="suggestion">Accept</button>
+                        <button class="btn btn-dismiss" data-type="suggestion">Dismiss</button>
+                    </div>
+                </div>
+            `;
+            suggestionsSection.insertAdjacentHTML('beforeend', suggestionItem);
+        });
+    }
+
+    // Helper function to place cursor at end
+    function placeCaretAtEnd(element) {
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(element);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
+    // Function to delete a word from input
+    function deleteWordFromInput(word) {
+        const text = contentEditable.innerHTML;
+        const regexFlagged = new RegExp(`<span class="flagged-word" data-word="${word}">${word}</span>`, 'g');
+        const regexSuggested = new RegExp(`<span class="suggested-word" data-word="${word}">${word}</span>`, 'g');
+        contentEditable.innerHTML = text.replace(regexFlagged, '').replace(regexSuggested, '');
+        updateContent();
+    }
+
+    //Function to switch word from input 
+    function replaceWordFromInput(word) {
+        const regexSuggested = new RegExp(`<span class="suggested-word" data-word="${word}">${word}</span>`, 'g');
+        contentEditable.innerHTML = text.replace(regexSuggested, 'hello');
+        console.log(passingReplaceWorld);
+        updateContent();
+    }
+    
+    // Event delegation for button clicks
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('.btn-accept')) {
+            const word = e.target.dataset.word;
+            deleteWordFromInput(word);
+            replaceWordFromInput(word);
+        } else if (e.target.matches('.btn-dismiss')) {
+            const editItem = e.target.closest('.edit-item');
+            if (editItem) {
+                editItem.remove();
+                // Update count after dismissal
+                const remainingItems = document.querySelectorAll('.edit-item').length;
+                countDisplay.textContent = remainingItems;
+            }
+        }
+    });
+
+    // Modal functionality
     helpButton.addEventListener('click', () => {
         modalOverlay.style.display = 'flex';
     });
@@ -17,26 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalOverlay.style.display = 'none';
         }
     });
-    const inputField = document.querySelector('.input-field');
-    
-    inputField.addEventListener('input', () => {
-        // Here you could add logic to analyze the text and update suggestions
-    });
 
-    const acceptButtons = document.querySelectorAll('.btn-accept');
-    const dismissButtons = document.querySelectorAll('.btn-dismiss');
-
-    acceptButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const suggestionItem = button.closest('.suggestions-section');
-            suggestionItem.style.display = 'none';
-        });
-    });
-
-    dismissButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const suggestionItem = button.closest('.suggestions-section');
-            suggestionItem.style.display = 'none';
-        });
-    });
+    // Add input event listener
+    contentEditable.addEventListener('input', updateContent);
 });
