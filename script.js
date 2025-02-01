@@ -4,7 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch updated wordChecks from Flask server
     async function fetchUpdatedWordChecks() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/update_word_checks');
+            const text = contentEditable.textContent;
+            const response = await fetch('http://127.0.0.1:5000/update_word_checks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text })
+            });
             if (response.ok) {
                 wordChecks = await response.json();
                 console.log('Updated wordChecks:', wordChecks);
