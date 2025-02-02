@@ -370,8 +370,13 @@ body {
     color: var(--text-gray);
     line-height: 1.5;
     font-size:16px;
-
 }
+
+.modal-content p{
+  font-size:14px;
+  margin-top:1rem;
+}
+
 
 .modal-image {
     width: 100%;
