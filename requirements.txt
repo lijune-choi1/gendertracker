@@ -2,3 +2,5 @@ spacy
 nltk
 torch
 transformers
+flask
+flair
