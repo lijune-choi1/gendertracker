@@ -19,6 +19,25 @@ from nltk.corpus import wordnet, words, gutenberg
 from nltk.probability import FreqDist
 from transformers import pipeline, AutoTokenizer, AutoModel
 
+from pathlib import Path
+from scipy.spatial.distance import cosine
+import numpy as np
+
+from sentence_transformers import SentenceTransformer
+
+from scipy.spatial.distance import cosine
+
+
+
+from IPython.display import clear_output
+clear_output()
+
+import os
+import openai
+from openai import OpenAI
+
+
+
 nltk.download('wordnet')
 nltk.download('words')
 nltk.download('omw-1.4')
@@ -76,8 +95,25 @@ def update_word_checks():
     return response
 
 def best_suggestion(sentence, word, replacements):
-    # IMPLEMENT THIS
-    return replacements[0]
+    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    new_sentences = []
+
+    for r in replacements:
+        new = sentence.replace(word, r)
+        new_sentences.append(new)
+
+
+    cosine_similarities = []
+
+    for n in new_sentences:
+        embeddings = model.encode([sentence, n ])
+        embedding1 = embeddings[0]
+        embedding2 = embeddings[1]
+        cosine_sim = 1 - cosine(embedding1, embedding2)
+        cosine_similarities.append(cosine_sim)
+
+    max_index = np.argmax(cosine_similarities)
+    return word, r[max_index]
 
 # This method checks if a sentence contains words.
 def find_sentences_with_words(words, text):
@@ -171,10 +207,54 @@ def find_semantic_similarity(word,new_word):
   cos_sim = torch.nn.functional.cosine_similarity(word_embedding,suggested_embedding)
   return cos_sim.item()
 
+def get_embedding(text, model="text-embedding-ada-002"):
+    response = openai.embeddings.create(
+        input=[text],  # Must be a list
+        model="text-embedding-3-small",
+    )
+    return response.data[0].embedding  # Access the new structure
+
+# Function to calculate cosine similarity
+def cosine_similarity(embedding1, embedding2):
+    dot_product = np.dot(embedding1, embedding2)
+    norm1 = np.linalg.norm(embedding1)
+    norm2 = np.linalg.norm(embedding2)
+    return dot_product / (norm1 * norm2)
+
+masculine_words = ["man", "male", "boy", "uncle", "grandpa", "father", "dad", "patriarch", "manly", "masculine", "king", "prince", "lord"]
+masculine_embeddings = [get_embedding(word) for word in masculine_words]
+masculine_sum = masculine_embeddings[0]
+for i in range(1, len(masculine_embeddings)):
+    masculine_sum = np.add(masculine_sum, masculine_embeddings[i])
+masculine_average = masculine_sum / len(masculine_words)
+
+feminine_words = ["woman", "female", "girl", "aunt", "grandma", "mother", "mom", "matriarch", "womanly", "feminine", "queen", "princess", "lady"]
+feminine_embeddings = [get_embedding(word) for word in feminine_words]
+feminine_sum = feminine_embeddings[0]
+for i in range(1, len(feminine_embeddings)):
+    feminine_sum = np.add(feminine_sum, feminine_embeddings[i])
+feminine_average = feminine_sum / len(feminine_words)
+
+def get_score(word):
+  return (cosine_similarity(get_embedding(word), masculine_average) - cosine_similarity(get_embedding(word), feminine_average))
+
 def get_gender(adjective_list):
-    ## FIX THIS
+    scores = []
+    for a in adjective_list:
+        s = get_score(a)
+        scores.append(s)
+    adjective_scores = list(zip(adjective_list, scores))
+
     to_flag = []
     to_suggest = adjective_list
+
+    for tu in adjective_scores:
+        score = tu[1] * 10
+        if (score <= -0.7):
+            to_flag.append(tu[0])
+        if (score >= -0.7) and (score <= -0.2):
+            to_suggest.append(tu[0])
+   
     return(to_flag, to_suggest)
 
 if __name__ == '__main__':
