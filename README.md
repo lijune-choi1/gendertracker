@@ -1,6 +1,6 @@
-# gendertracker
+# Illuminate
 
-[gendertracker] scans a user-inputted body of text for adjectives that skew stereotypically male or female and offers users alternative, more gender-neutral phrases to use. For example, "aggressive" typically skews male whereas "bossy" typically skews female ([see Bolukbasi et. al, 2016 for more information](https://arxiv.org/pdf/1607.06520)). Our goal in developing this web application is to neutralize gender bias for word embeddings in natural language, ensuring more fair hiring practices that do not perpetuate gender stereotypes.
+[Illuminate] scans a user-inputted body of text for adjectives that skew stereotypically male or female and offers users alternative, more gender-neutral phrases to use. For example, "aggressive" typically skews male whereas "bossy" typically skews female ([see Bolukbasi et. al, 2016 for more information](https://arxiv.org/pdf/1607.06520)). Our goal in developing this web application is to illuminate and neutralize gender bias for word embeddings in natural language, ensuring more fair hiring practices that do not perpetuate gender stereotypes.
 
 ## Getting Started
 
