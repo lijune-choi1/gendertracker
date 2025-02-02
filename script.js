@@ -32,7 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const helpButton = document.querySelector('.help-button');
     const modalOverlay = document.querySelector('.modal-overlay');
     const modalClose = document.querySelector('.modal-close');
-
+    const formatButtons = document.querySelectorAll('.format-btn');
+    const clearButton = document.querySelectorAll('.clear-btn');
+    const rescanButton = document.querySelectorAll('.rescan-btn');
+    const copyButton = document.querySelector('.copy-btn');
+    const wordCountDisplay = document.querySelector('.word-count');
+    
+    
     // Function to highlight words and update panels
     function updateContent() {
         let text = contentEditable.textContent;
@@ -182,16 +188,53 @@ document.addEventListener('DOMContentLoaded', () => {
     contentEditable.addEventListener('input', fetchUpdatedWordChecks);
     fetchUpdatedWordChecks();
 
+    // Copy functionality
+    copyButton.addEventListener('click', () => {
+        const text = contentEditable.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            // Visual feedback
+            copyButton.innerHTML = '<i class="fa fa-check"></i>';
+            setTimeout(() => {
+                copyButton.innerHTML = '<i class="fa fa-copy"></i>';
+            }, 2000);
+        });
+    });
+
+    // Word count functionality
+    function updateWordCount() {
+        const text = contentEditable.textContent || '';
+        const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        wordCountDisplay.textContent = `${wordCount} words`;
+    }
+
+    // Add word count update to existing input listener
+    contentEditable.addEventListener('input', () => {
+        updateContent(); // Your existing update function
+        updateWordCount();
+    });
+
+    // Initial word count
+    updateWordCount();
+
+    function clearText(element) {
+        if (element.innerHTML === 'Type or paste (Command + V) text here or upload a document') {
+            element.innerHTML = '';
+        }
+    }
+
+    function restoreText(element) {
+        if (element.innerHTML === '') {
+            element.innerHTML = 'Type or paste (Command + V) text here or upload a document';
+        }
+    }
+    
+    clearButton.addEventListener('click', () => {
+        clearText();
+    });
+    rescanButton.addEventListener('click', () => {
+        restoreText();
+    });
+
+
 });
 
-function clearText(element) {
-    if (element.innerHTML === 'Type or paste (Command + V) text here or upload a document') {
-        element.innerHTML = '';
-    }
-}
-
-function restoreText(element) {
-    if (element.innerHTML === '') {
-        element.innerHTML = 'Type or paste (Command + V) text here or upload a document';
-    }
-}
