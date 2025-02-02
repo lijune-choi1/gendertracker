@@ -4,3 +4,11 @@ torch
 transformers
 flask
 flair
+pandas
+numpy
+pathlib
+scipy
+sentence_transformers
+IPython
+os
+openai

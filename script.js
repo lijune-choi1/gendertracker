@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let wordChecks = {};
 
-    // Get DOM elements
+    // get DOM elements
     const contentEditable = document.querySelector('.input-field');
     const flaggedSection = document.querySelector('.overview-section:nth-child(2) .edit-section');
     const suggestionsSection = document.querySelector('.overview-section:nth-child(3) .edit-section');
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.querySelector('.copy-btn');
     const wordCountDisplay = document.querySelector('.word-count');
 
-    // Function to fetch updated wordChecks from Flask server
+    // fetch updated wordChecks from Flask server
     async function fetchUpdatedWordChecks() {
         try {
             const text = contentEditable.textContent;
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Format button functionality
+    // format button
     formatButtons.forEach(button => {
         button.addEventListener('click', () => {
             const command = button.dataset.command;
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Clear and Rescan functionality
+    // clear and re-scan
     if (clearButton) {
         clearButton.addEventListener('click', () => {
             contentEditable.innerHTML = '';
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateContent() {
-        // Save selection state
+        // save selection state
         const selection = window.getSelection();
         const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let foundFlagged = new Set();
         let foundSuggestions = new Set();
 
-        // Process flagged words
+        // process flagged words
         Object.entries(wordChecks.flagged || {}).forEach(([word, reason]) => {
             const regex = new RegExp(`\\b${word}\\b`, 'gi');
             if (regex.test(html)) {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html = html.replace(regex, `<span class="flagged-word" data-word="${word}">$&</span>`);
         });
 
-        // Process suggestions
+        // process suggested words
         Object.entries(wordChecks.suggestions || {}).forEach(([word, suggestion]) => {
             const regex = new RegExp(`\\b${word}\\b`, 'gi');
             if (regex.test(html)) {
@@ -110,11 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
             regex.lastIndex = 0;
             html = html.replace(regex, `<span class="suggested-word" data-word="${word}">$&</span>`);
         });
-
-        // Update content while preserving formatting
         contentEditable.innerHTML = html;
 
-        // Restore selection if it existed
         if (range) {
             try {
                 selection.removeAllRanges();
@@ -124,13 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Update panels
         updateFlaggedSection(foundFlagged);
         updateSuggestionsSection(foundSuggestions);
         countDisplay.textContent = foundFlagged.size + foundSuggestions.size;
     }
 
-    // Remaining helper functions
     function updateFlaggedSection(foundWords) {
         flaggedSection.innerHTML = '';
         foundWords.forEach(({ word, reason }) => {
@@ -199,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateContent();
     }
 
-    // Event delegation for buttons
     document.addEventListener('click', (e) => {
         if (e.target.matches('.btn-accept')) {
             const word = e.target.dataset.word;
@@ -219,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Copy functionality
+    // copy functionality
     copyButton.addEventListener('click', () => {
         const text = contentEditable.textContent;
         navigator.clipboard.writeText(text).then(() => {
@@ -230,14 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Word count functionality
+    // word count functionality
     function updateWordCount() {
         const text = contentEditable.textContent || '';
         const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
         wordCountDisplay.textContent = `${wordCount} words`;
     }
 
-    // Modal functionality
     helpButton.addEventListener('click', () => {
         modalOverlay.style.display = 'flex';
     });
@@ -252,20 +245,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Clear placeholder on focus
     contentEditable.addEventListener('focus', function() {
         if (this.textContent === 'Type or paste (Command + V) text here or upload a document') {
             this.textContent = '';
         }
     }, { once: true });
 
-    // Set up initial event listeners
+    // setting up event listeners
     contentEditable.addEventListener('input', () => {
         updateWordCount();
         fetchUpdatedWordChecks();
     });
 
-    // Initial setup
+    // setup
     fetchUpdatedWordChecks();
     updateWordCount();
 });
