@@ -14,7 +14,7 @@ Requirements for the software and other tools to build, test and push
 
 Install spaCy library
 
-    pip install spacy
+    pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
 
 Install Natural Language Toolkit library
 
