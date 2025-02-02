@@ -458,3 +458,160 @@ i{
 .main-content {
     padding-bottom: 70px;
 }
+
+
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+    /* Layout adjustments */
+    .wrapper {
+        flex-direction: column;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #eee;
+    }
+
+    /* Header adjustments */
+    .info-header h1 {
+        font-size: 32px;
+        line-height: 1.2;
+    }
+
+    .info-header p {
+        font-size: 14px;
+    }
+
+    /* Input area adjustments */
+    .input-field {
+        min-height: 150px;
+        font-size: 14px;
+    }
+
+    /* Overview section adjustments */
+    .over-header {
+        padding: 0.75rem;
+    }
+
+    .result-box {
+        margin: 0 0.75rem;
+    }
+
+    .count-display {
+        font-size: 3rem;
+    }
+
+    /* Edit sections */
+    .edit-section {
+        padding: 0.75rem;
+        margin: 0.75rem;
+    }
+
+    .button-group, .button-group2 {
+        flex-wrap: wrap;
+    }
+
+    /* Toolbar adjustments */
+    .toolbar {
+        right: 0;
+        bottom: 0;
+        padding: 0 1rem;
+        height: 60px; /* Slightly taller for better touch targets */
+    }
+
+    .format-tools {
+        gap: 0.25rem;
+    }
+
+    .format-btn, .copy-btn {
+        padding: 0.75rem; /* Larger touch target */
+    }
+
+    /* Modal adjustments */
+    .modal {
+        width: 95%;
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .modal h2 {
+        font-size: 20px;
+    }
+
+    .modal-content {
+        font-size: 14px;
+    }
+
+    /* Button adjustments for touch */
+    .btn, .btn-rescan, .btn-clear {
+        padding: 0.75rem 1rem;
+        min-width: 44px; /* Minimum touch target size */
+        min-height: 44px;
+    }
+
+    /* Help button positioning */
+    .help-button {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    /* Text size adjustments */
+    .word-count {
+        font-size: 12px;
+    }
+}
+
+/* Small phone adjustments */
+@media screen and (max-width: 480px) {
+    .info-header h1 {
+        font-size: 24px;
+    }
+
+    .format-tools {
+        gap: 0.15rem;
+    }
+
+    .format-btn, .copy-btn {
+        padding: 0.5rem;
+    }
+
+    .text-stats {
+        display: none; /* Hide word count on very small screens */
+    }
+
+    .modal {
+        padding: 1rem;
+    }
+
+    .count-display {
+        font-size: 2.5rem;
+    }
+}
+
+/* Handle landscape orientation */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .input-field {
+        min-height: 100px;
+    }
+
+    .toolbar {
+        height: 50px;
+    }
+
+    .format-btn, .copy-btn {
+        padding: 0.5rem;
+    }
+}
+
+/* Prevent fixed positioning issues on mobile */
+@media screen and (max-width: 768px) and (max-height: 600px) {
+    .toolbar {
+        position: sticky;
+        bottom: 0;
+    }
+}
