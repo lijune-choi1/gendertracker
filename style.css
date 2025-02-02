@@ -265,10 +265,10 @@ body {
 .button-group2 .btn-clear {
     padding: 0.5rem 1rem;
     border-radius: 4px;
-    background: var(--purple-primary);
-    color: white;
+    background: transparent;
+    color: var(--purple-primary);
     font-weight: 600;
-    border: 2px solid transparent;
+    border: 1px solid var(--purple-primary);
     transition:0.2s ease-in;
 }
 .button-group2 .btn-clear:hover{
@@ -308,13 +308,20 @@ body {
 
 .help-button {
     font-size:16px;
-    background: var(--purple-primary);
-    color: white;
-    border: none;
+    background-color: transparent;
+    border: 2px solid var(--purple-light);
+    color: black;
     border-radius: 8px;
     padding:0.5rem;
     cursor: pointer;
     margin-top:1rem;
+    transition:0.2s ease-in;
+
+}
+.help-button:hover{
+  background-color: var(--purple-light);
+  transition:0.2s ease-in;
+
 }
 
   /* Modal styles */
