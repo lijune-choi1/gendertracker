@@ -237,7 +237,6 @@ body {
     margin-bottom:1rem;
 }
 
-
 .btn {
     padding: 0.5rem 1rem;
     border: none;
@@ -245,7 +244,7 @@ body {
     cursor: pointer;
 }
 
-.btn-rescan {
+.button-group2 .btn-rescan {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     background: var(--purple-primary);
@@ -255,7 +254,7 @@ body {
     transition:0.2s ease-in;
 }
 
-.btn-rescan:hover{
+.button-group2 .btn-rescan:hover{
     background: var(--purple-darker);
     color: white;
     font-weight: 600;
@@ -263,7 +262,7 @@ body {
     transition:0.2s ease-in;
 }
 
-.btn-clear {
+.button-group2 .btn-clear {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     background: var(--purple-primary);
@@ -272,7 +271,7 @@ body {
     border: 2px solid transparent;
     transition:0.2s ease-in;
 }
-.btn-clear:hover{
+.button-group2 .btn-clear:hover{
     background: var(--purple-darker);
     color: white;
     font-weight: 600;
