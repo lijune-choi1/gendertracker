@@ -1,15 +1,15 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Playwrite+IN:wght@100..400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Domine:wght@400..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Playwrite+IN:wght@100..400&display=swap');
 
 :root {
     --purple-primary: #4B0082;
+    --purple-darker:#290046;
     --purple-light: #F5F0FF;
     --purple-light2: #FDF8FF;
     --grey-light: #f8f8f8;
     --text-gray: #666;
+    --button-gray: #949494;
     --flag-color:#ff0000;
     --suggestion-color:#ff8000;
-
 }
 
 * {
@@ -44,7 +44,7 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
-    background: var(--purple-primary);
+    background: black;
     color: white;
 }
 
@@ -57,6 +57,20 @@ body {
     border-radius: 50%;
 }
 
+.info-header{
+    border-bottom:2px solid var(--grey-light);
+}
+.info-header h1{
+    font-size:48px;
+    font-weight: 400;
+    color:var(--purple-primary);
+    font-family: "Castoro", serif;
+}
+.info-header p{
+   line-height: 150%;
+   color: var(--text-gray);
+}
+
 .input-area {
     margin-top: 2rem;
 }
@@ -66,20 +80,58 @@ body {
     margin-bottom: 1rem;
 }
 
-.input-field {
+/* .input-field {
     width: 100%;
     min-height: 100px;
     padding: 1rem;
     border-radius: 4px;
     color: var(--text-gray);
     font-size:16px;
+} */
+
+/* Update input field styles */
+.input-field {
+    width: 100%;
+    min-height: 200px;
+    max-width:100%;
+    padding: 1rem;
+    border-radius: 4px;
+    color: var(--text-gray);
+    font-size: 16px;
+    outline: none; /* Remove default focus highlight */
+    caret-color: var(--purple-primary); /* Customize cursor color */
+    line-height: 1.6;
+}
+
+/* Preserve formatting styles */
+.input-field b, .input-field strong {
+    font-weight: bold;
+}
+
+.input-field i, .input-field em {
+    font-style: italic;
+}
+
+.input-field ul {
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+
+.input-field a {
+    color: var(--purple-primary);
+    text-decoration: underline;
+}
+
+/* Make sure highlighted words stay visible even when formatted */
+.flagged-word, .suggested-word {
+    display: inline-block; /* Ensures formatting works within the span */
 }
 
 .overview-section {
     margin-bottom: 2rem;
 }
 
-.overview-section h2 {
+.over-header{
     color: var(--purple-primary);
     border-bottom: 2px solid;
     border-color: var(--grey-light);
@@ -87,6 +139,19 @@ body {
     font-size:16px;
     margin-bottom: 1rem;
 }
+
+.over-header h2{
+    color: var(--purple-primary);
+    font-size:16px;
+}
+.over-header p{
+    font-size: 14px;
+    color:var(--text-gray);
+    line-height: 1.5;
+    font-weight:300;
+    margin-top: 0.5rem;
+}
+
 
 .result-box{
     padding:1rem;
@@ -114,9 +179,11 @@ body {
     padding: 1rem;
     border-radius: 8px;
     margin: 1rem;
+    transition:0.2s ease-in;
 }
 .edit-section:hover {
     background: var(--purple-light2);
+    transition:0.2s ease-in;
 }
 
 .edit-item {
@@ -128,6 +195,8 @@ body {
     gap: 0.5rem;
     font-size: 14px;
     margin-bottom: 0.5rem;
+    color:var(--text-gray);
+    font-weight: 300;
 }
 
 .suggestion-dot {
@@ -172,25 +241,39 @@ body {
 .btn-accept {
     background: var(--purple-primary);
     color: white;
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition:0.2s ease-in;
 }
+.btn-accept:hover{
+    background: var(--purple-darker);
+    color: white;
+    font-weight: 600;
+    border: 2px solid transparent;
+    transition:0.2s ease-in;
+}
+
 
 .btn-dismiss {
     background: transparent;
     color: var(--text-gray);
+    border: 1px solid transparent;
+    transition:0.2s ease-in;
+}
+.btn-dismiss:hover {
+    border: 1px solid var(--button-gray);
+    transition:0.2s ease-in;
 }
 
 .help-button {
-    position: fixed;
-    bottom: 2rem;
-    left: 2rem;
-    width: 40px;
-    height: 40px;
+    font-size:16px;
     background: var(--purple-primary);
     color: white;
     border: none;
-    border-radius: 50%;
-    font-size: 1.5rem;
+    border-radius: 8px;
+    padding:0.5rem;
     cursor: pointer;
+    margin-top:1rem;
 }
 
   /* Modal styles */
@@ -271,4 +354,59 @@ body {
 
 .suggestion-item.active {
     display: block;
+}
+
+i{
+    color:black;
+}
+
+/* Add to your CSS file */
+.toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 400px; /* Account for sidebar width */
+    height: 50px;
+    background: white;
+    border-top: 1px solid var(--grey-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+
+.format-tools {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.format-btn, .copy-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 4px;
+    color: var(--text-gray);
+    transition: all 0.2s ease;
+}
+
+.format-btn:hover, .copy-btn:hover {
+    background: var(--purple-light);
+    color: var(--purple-primary);
+}
+
+.format-btn.active {
+    background: var(--purple-light);
+    color: var(--purple-primary);
+}
+
+.text-stats {
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+/* Adjust main content to account for toolbar */
+.main-content {
+    padding-bottom: 70px;
 }
