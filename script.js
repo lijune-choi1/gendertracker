@@ -1,6 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     let wordChecks = {};
 
+    // Get DOM elements
+    const contentEditable = document.querySelector('.input-field');
+    const flaggedSection = document.querySelector('.overview-section:nth-child(2) .edit-section');
+    const suggestionsSection = document.querySelector('.overview-section:nth-child(3) .edit-section');
+    const countDisplay = document.querySelector('.count-display');
+    const helpButton = document.querySelector('.help-button');
+    const modalOverlay = document.querySelector('.modal-overlay');
+    const modalClose = document.querySelector('.modal-close');
+    const formatButtons = document.querySelectorAll('.format-btn');
+    const clearButton = document.querySelector('.clear-btn');
+    const rescanButton = document.querySelector('.rescan-btn');
+    const copyButton = document.querySelector('.copy-btn');
+    const wordCountDisplay = document.querySelector('.word-count');
+
     // Function to fetch updated wordChecks from Flask server
     async function fetchUpdatedWordChecks() {
         try {
@@ -15,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 wordChecks = await response.json();
                 console.log('Updated wordChecks:', wordChecks);
-                updateContent(); // Call updateContent after fetching wordChecks
+                updateContent();
             } else {
                 console.error('Failed to fetch updated wordChecks');
             }
@@ -24,63 +38,101 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Get DOM elements
-    const contentEditable = document.querySelector('.input-field');
-    const flaggedSection = document.querySelector('.overview-section:nth-child(2) .edit-section');
-    const suggestionsSection = document.querySelector('.overview-section:nth-child(3) .edit-section');
-    const countDisplay = document.querySelector('.count-display');
-    const helpButton = document.querySelector('.help-button');
-    const modalOverlay = document.querySelector('.modal-overlay');
-    const modalClose = document.querySelector('.modal-close');
-    const formatButtons = document.querySelectorAll('.format-btn');
-    const clearButton = document.querySelectorAll('.clear-btn');
-    const rescanButton = document.querySelectorAll('.rescan-btn');
-    const copyButton = document.querySelector('.copy-btn');
-    const wordCountDisplay = document.querySelector('.word-count');
-    
-    
-    // Function to highlight words and update panels
+    // Format button functionality
+    formatButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const command = button.dataset.command;
+            
+            if (command === 'createLink') {
+                const url = prompt('Enter the URL:');
+                if (url) {
+                    document.execCommand(command, false, url);
+                }
+            } else if (command === 'removeFormat') {
+                document.execCommand(command, false, null);
+                document.execCommand('unlink', false, null);
+                // Remove any custom highlight spans
+                const text = contentEditable.textContent;
+                contentEditable.textContent = text;
+            } else {
+                document.execCommand(command, false, null);
+            }
+            
+            // Toggle active state for formatting buttons
+            if (['bold', 'italic'].includes(command)) {
+                button.classList.toggle('active');
+            }
+            
+            fetchUpdatedWordChecks();
+        });
+    });
+
+    // Clear and Rescan functionality
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            contentEditable.innerHTML = '';
+            updateWordCount();
+            fetchUpdatedWordChecks();
+        });
+    }
+
+    if (rescanButton) {
+        rescanButton.addEventListener('click', () => {
+            fetchUpdatedWordChecks();
+        });
+    }
+
     function updateContent() {
-        let text = contentEditable.textContent;
+        // Save selection state
+        const selection = window.getSelection();
+        const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
+        let html = contentEditable.innerHTML;
         let foundFlagged = new Set();
         let foundSuggestions = new Set();
 
-        // Check flagged words
-        Object.entries(wordChecks.flagged).forEach(([word, reason]) => {
+        // Process flagged words
+        Object.entries(wordChecks.flagged || {}).forEach(([word, reason]) => {
             const regex = new RegExp(`\\b${word}\\b`, 'gi');
-            if (regex.test(text)) {
+            if (regex.test(html)) {
                 foundFlagged.add({ word, reason });
             }
             regex.lastIndex = 0;
-            text = text.replace(regex, `<span class="flagged-word" data-word="${word}">$&</span>`);
+            html = html.replace(regex, `<span class="flagged-word" data-word="${word}">$&</span>`);
         });
 
-        // Check suggested improvements
-        Object.entries(wordChecks.suggestions).forEach(([word, suggestion]) => {
+        // Process suggestions
+        Object.entries(wordChecks.suggestions || {}).forEach(([word, suggestion]) => {
             const regex = new RegExp(`\\b${word}\\b`, 'gi');
-            if (regex.test(text)) {
+            if (regex.test(html)) {
                 foundSuggestions.add({ word, suggestion });
             }
             regex.lastIndex = 0;
-            text = text.replace(regex, `<span class="suggested-word" data-word="${word}">$&</span>`);
+            html = html.replace(regex, `<span class="suggested-word" data-word="${word}">$&</span>`);
         });
 
-        // Update the content
-        contentEditable.innerHTML = text;
-        placeCaretAtEnd(contentEditable);
-        
+        // Update content while preserving formatting
+        contentEditable.innerHTML = html;
+
+        // Restore selection if it existed
+        if (range) {
+            try {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (e) {
+                placeCaretAtEnd(contentEditable);
+            }
+        }
+
         // Update panels
         updateFlaggedSection(foundFlagged);
         updateSuggestionsSection(foundSuggestions);
-        
-        // Update count
         countDisplay.textContent = foundFlagged.size + foundSuggestions.size;
     }
 
-    // Function to update the flagged section
+    // Remaining helper functions
     function updateFlaggedSection(foundWords) {
         flaggedSection.innerHTML = '';
-
         foundWords.forEach(({ word, reason }) => {
             const flaggedItem = `
                 <div class="edit-item">
@@ -101,10 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to update the suggestions section
     function updateSuggestionsSection(foundWords) {
         suggestionsSection.innerHTML = '';
-
         foundWords.forEach(({ word, suggestion }) => {
             const suggestionItem = `
                 <div class="edit-item">
@@ -126,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Helper function to place cursor at end
     function placeCaretAtEnd(element) {
         const range = document.createRange();
         const selection = window.getSelection();
@@ -136,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
         selection.addRange(range);
     }
 
-    // Function to delete a word from input
     function deleteWordFromInput(word) {
         const text = contentEditable.innerHTML;
         const regexFlagged = new RegExp(`<span class="flagged-word" data-word="${word}">${word}</span>`, 'g');
@@ -144,30 +192,50 @@ document.addEventListener('DOMContentLoaded', () => {
         updateContent();
     }
 
-    //Function to switch word from input 
     function replaceWordFromInput(word) {
         const text = contentEditable.innerHTML;
         const regexSuggested = new RegExp(`<span class="suggested-word" data-word="${word}">${word}</span>`, 'g');
         contentEditable.innerHTML = text.replace(regexSuggested, wordChecks.suggestions[word]);
         updateContent();
     }
-    
-    // Event delegation for button clicks
+
+    // Event delegation for buttons
     document.addEventListener('click', (e) => {
         if (e.target.matches('.btn-accept')) {
             const word = e.target.dataset.word;
-            deleteWordFromInput(word);
-            replaceWordFromInput(word);
+            const type = e.target.dataset.type;
+            if (type === 'flagged') {
+                deleteWordFromInput(word);
+            } else if (type === 'suggestion') {
+                replaceWordFromInput(word);
+            }
         } else if (e.target.matches('.btn-dismiss')) {
             const editItem = e.target.closest('.edit-item');
             if (editItem) {
                 editItem.remove();
-                // Update count after dismissal
                 const remainingItems = document.querySelectorAll('.edit-item').length;
                 countDisplay.textContent = remainingItems;
             }
         }
     });
+
+    // Copy functionality
+    copyButton.addEventListener('click', () => {
+        const text = contentEditable.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            copyButton.innerHTML = '<i class="fa fa-check"></i>';
+            setTimeout(() => {
+                copyButton.innerHTML = '<i class="fa fa-copy"></i>';
+            }, 2000);
+        });
+    });
+
+    // Word count functionality
+    function updateWordCount() {
+        const text = contentEditable.textContent || '';
+        const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        wordCountDisplay.textContent = `${wordCount} words`;
+    }
 
     // Modal functionality
     helpButton.addEventListener('click', () => {
@@ -184,57 +252,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // THIS IS CURRENTLY BEING CALLED ON EDIT. NEED TO MAKE RUN BUTTON
-    contentEditable.addEventListener('input', fetchUpdatedWordChecks);
-    fetchUpdatedWordChecks();
+    // Clear placeholder on focus
+    contentEditable.addEventListener('focus', function() {
+        if (this.textContent === 'Type or paste (Command + V) text here or upload a document') {
+            this.textContent = '';
+        }
+    }, { once: true });
 
-    // Copy functionality
-    copyButton.addEventListener('click', () => {
-        const text = contentEditable.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            // Visual feedback
-            copyButton.innerHTML = '<i class="fa fa-check"></i>';
-            setTimeout(() => {
-                copyButton.innerHTML = '<i class="fa fa-copy"></i>';
-            }, 2000);
-        });
-    });
-
-    // Word count functionality
-    function updateWordCount() {
-        const text = contentEditable.textContent || '';
-        const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-        wordCountDisplay.textContent = `${wordCount} words`;
-    }
-
-    // Add word count update to existing input listener
+    // Set up initial event listeners
     contentEditable.addEventListener('input', () => {
-        updateContent(); // Your existing update function
         updateWordCount();
+        fetchUpdatedWordChecks();
     });
 
-    // Initial word count
+    // Initial setup
+    fetchUpdatedWordChecks();
     updateWordCount();
-
-    function clearText(element) {
-        if (element.innerHTML === 'Type or paste (Command + V) text here or upload a document') {
-            element.innerHTML = '';
-        }
-    }
-
-    function restoreText(element) {
-        if (element.innerHTML === '') {
-            element.innerHTML = 'Type or paste (Command + V) text here or upload a document';
-        }
-    }
-    
-    clearButton.addEventListener('click', () => {
-        clearText();
-    });
-    rescanButton.addEventListener('click', () => {
-        restoreText();
-    });
-
-
 });
-
